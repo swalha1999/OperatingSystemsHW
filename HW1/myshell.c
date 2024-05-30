@@ -23,6 +23,41 @@ typedef struct CommandHistory
     CommandPtr tail;
 } CommandHistory;
 
+CommandPtr createCommand(char *name, char **args);
+void addCommandToHistory(CommandHistoryPtr commandsHistory, CommandPtr newCommand);
+void printCommandHistory(CommandHistoryPtr commandHistory);
+void freeCommandHistory(CommandHistoryPtr commandHistory);
+
+int main(void)
+{
+    close(2);
+    dup(1);
+    char command[BUFFER_SIZE];
+    CommandHistory commandHistory = {NULL, NULL};
+    while (1)
+    {
+        fprintf(stdout, "my-shell> ");
+        memset(command, 0, BUFFER_SIZE);
+        fgets(command, BUFFER_SIZE, stdin);
+        if(strncmp(command, "exit", 4) == 0)
+        {
+            break;
+        }
+
+        /* code starts here*/
+        addCommandToHistory(&commandHistory, createCommand("ls", NULL));
+        addCommandToHistory(&commandHistory, createCommand("cd", NULL));
+        addCommandToHistory(&commandHistory, createCommand("pwd", NULL));
+
+        printCommandHistory(&commandHistory);
+        
+        /* code ends here*/
+    }
+
+    freeCommandHistory(&commandHistory);
+    return 0;
+}
+
 CommandPtr createCommand(char *name, char **args)
 {
     CommandPtr newCommand = (CommandPtr)malloc(sizeof(Command));
@@ -69,34 +104,4 @@ void freeCommandHistory(CommandHistoryPtr commandHistory)
         free(temp);
         temp = next;
     }
-}
-
-int main(void)
-{
-    close(2);
-    dup(1);
-    char command[BUFFER_SIZE];
-    CommandHistory commandHistory;
-    while (1)
-    {
-        fprintf(stdout, "my-shell> ");
-        memset(command, 0, BUFFER_SIZE);
-        fgets(command, BUFFER_SIZE, stdin);
-        if(strncmp(command, "exit", 4) == 0)
-        {
-            break;
-        }
-
-        /* code starts here*/
-        addCommandToHistory(&commandHistory, createCommand("ls", NULL));
-        addCommandToHistory(&commandHistory, createCommand("cd", NULL));
-        addCommandToHistory(&commandHistory, createCommand("pwd", NULL));
-
-        printCommandHistory(&commandHistory);
-        
-        /* code ends here*/
-    }
-
-    freeCommandHistory(&commandHistory);
-    return 0;
 }
