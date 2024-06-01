@@ -10,8 +10,7 @@
 typedef struct Command* CommandPtr;
 typedef struct Command
 {
-    char *name;
-    char **args;
+    char *rawCommamd;
     CommandPtr next_node;    
     CommandPtr prev_node;
 } Command;
@@ -23,7 +22,7 @@ typedef struct CommandHistory
     CommandPtr tail;
 } CommandHistory;
 
-CommandPtr createCommand(char *name, char **args);
+CommandPtr createCommand(char* rawCommand);
 void addCommandToHistory(CommandHistoryPtr commandsHistory, CommandPtr newCommand);
 void printCommandHistory(CommandHistoryPtr commandHistory);
 void freeCommandHistory(CommandHistoryPtr commandHistory);
@@ -45,9 +44,9 @@ int main(void)
         }
 
         /* code starts here*/
-        addCommandToHistory(&commandHistory, createCommand("ls", NULL));
-        addCommandToHistory(&commandHistory, createCommand("cd", NULL));
-        addCommandToHistory(&commandHistory, createCommand("pwd", NULL));
+        addCommandToHistory(&commandHistory, createCommand("ls"));
+        addCommandToHistory(&commandHistory, createCommand("cd"));
+        addCommandToHistory(&commandHistory, createCommand("pwd"));
 
         printCommandHistory(&commandHistory);
         
@@ -58,11 +57,10 @@ int main(void)
     return 0;
 }
 
-CommandPtr createCommand(char *name, char **args)
+CommandPtr createCommand(char* rawCommand)
 {
     CommandPtr newCommand = (CommandPtr)malloc(sizeof(Command));
-    newCommand->name = name;
-    newCommand->args = args;
+    newCommand->rawCommamd = rawCommand;
     newCommand->next_node = NULL;
     newCommand->prev_node = NULL;
     return newCommand;
@@ -89,7 +87,7 @@ void printCommandHistory(CommandHistoryPtr commandHistory)
     CommandPtr temp = commandHistory->head;
     while(temp != NULL)
     {
-        fprintf(stdout, "%s\n", temp->name);
+        fprintf(stdout, "%s\n", temp->rawCommamd);
         temp = temp->next_node;
     }
 }
