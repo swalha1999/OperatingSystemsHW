@@ -141,7 +141,6 @@ int main(int argc, const char** argv)
         int value;
         parse_command(command, parsed_command, &value);
         execute_command(parsed_command, value);
-
     }
 
     return 0;

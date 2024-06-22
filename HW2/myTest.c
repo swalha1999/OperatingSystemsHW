@@ -32,21 +32,21 @@ void* print_list_task(void* arg)
 
 void* insert_value_task(void* arg)
 {
-	int value = (int)arg;
+	int value = (long)arg;
 	insert_value(mylist, value);
 	return 0;
 }
 
 void* remove_value_task(void* arg)
 {
-	int value = (int)arg;
+	int value = (long)arg;
 	remove_value(mylist, value);
 	return 0;
 }
 
 void* count_greater_task(void* arg)
 {
-	int threshold = (int)arg;
+	int threshold = (long)arg;
 	int pred(int value)
 	{
 		return value > threshold;
@@ -58,28 +58,33 @@ void* count_greater_task(void* arg)
 
 int main(int argc, const char** argv)
 {
-
 		mylist = create_list();
 
-		pthread_create(&threads[thread_count], NULL, delete_list_task, NULL);
-		thread_count++;
 
-		pthread_create(&threads[thread_count], NULL, print_list_task, NULL);
-		thread_count++;
-
-		pthread_create(&threads[thread_count], NULL, insert_value_task, (void*)value);
-		thread_count++;
-
-		pthread_create(&threads[thread_count], NULL, remove_value_task, (void*)value);
-		thread_count++;
-
-		pthread_create(&threads[thread_count], NULL, count_greater_task, (void*)value);
-		thread_count++;
-
-		for(int i = 0; i < thread_count; i++)
+        for (long i = 0; i < 10; i++)
+        {
+            pthread_create(&threads[thread_count], NULL, insert_value_task, (void*)i);
+            thread_count++;
+        }
+        
+        for(long i = 0; i < thread_count; i++)
 		{
 			pthread_join(threads[i], NULL);
 		}
 		thread_count = 0;
+		
+		pthread_create(&threads[thread_count], NULL, print_list_task, NULL);
+		thread_count++;
+
+        pthread_create(&threads[thread_count], NULL, count_greater_task, (void*)5);
+		thread_count++;
+
+		for(long i = 0; i < thread_count; i++)
+		{
+			pthread_join(threads[i], NULL);
+		}
+		thread_count = 0;
+
+		
 	return 0;
 }
