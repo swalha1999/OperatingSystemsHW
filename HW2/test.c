@@ -141,14 +141,6 @@ int main(int argc, const char** argv)
         int value;
         parse_command(command, parsed_command, &value);
         execute_command(parsed_command, value);
-		pthread_create(&threads[thread_count], NULL, print_list_task, NULL);
-		thread_count++;
-		for(int i = 0; i < thread_count; i++)
-		{
-			pthread_join(threads[i], NULL);
-		}
-		thread_count = 0;
-
 
     }
 

@@ -165,6 +165,7 @@ void print_list(list* list)
 
   // lock the list and lock the head node
   pthread_mutex_lock(&list->list_lock);
+  
   node* current = list->head;
   if (current == NULL) {
     pthread_mutex_unlock(&list->list_lock);
