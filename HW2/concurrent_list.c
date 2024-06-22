@@ -40,6 +40,7 @@ void delete_list(list* list)
   if (list == NULL) {
     return;
   }
+  
   // wait for all threads to finish and lock the list
   pthread_mutex_lock(&list->list_lock);
 
@@ -47,10 +48,12 @@ void delete_list(list* list)
   while (current != NULL) {
     pthread_mutex_lock(&current->lock);
     node* next = current->next;
+    pthread_mutex_unlock(&current->lock);
     pthread_mutex_destroy(&current->lock);
     free(current);
     current = next;
   }
+  pthread_mutex_unlock(&list->list_lock);
   pthread_mutex_destroy(&list->list_lock);
   free(list);
 }
@@ -67,6 +70,7 @@ void insert_value(list* list, int value)
     return;
   }
   new_node->value = value;
+  new_node->next = NULL;
   pthread_mutex_init(&new_node->lock, NULL);
 
   // lock the list
@@ -155,6 +159,7 @@ void remove_value(list* list, int value)
 void print_list(list* list)
 {
   if (list == NULL) {
+    printf("\n"); // DO NOT DELETE
     return;
   }
 
@@ -163,6 +168,7 @@ void print_list(list* list)
   node* current = list->head;
   if (current == NULL) {
     pthread_mutex_unlock(&list->list_lock);
+    printf("\n"); // DO NOT DELETE
     return;
   }
   pthread_mutex_lock(&current->lock);
